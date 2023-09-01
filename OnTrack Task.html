@@ -1,0 +1,222 @@
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Kakapo Knowledge</title>
+        <link rel="stylesheet" type="text/css" href="style1.css">
+        <style>
+            table {
+                border-collapse: collapse;
+                width: 80%;
+                margin: auto;
+            }
+            th, td {
+                border: 1px solid black;
+                padding: 8px;
+                text-align: left;
+            }
+            th {
+                background-color: rgb(134, 198, 37);
+            }
+            .center {
+                display: block;
+                margin: 0 auto;
+            }
+            .image-caption {
+                font-style: italic;
+            }
+            .error {
+                color: red;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header-container">
+            <p id="currentFullDate"></p>
+    <p id="currentTime"></p>
+            <div class="header">
+                <h1 style="color: rgb(134, 198, 37); text-align: center; margin: 0;">Cool Facts Corner</h1>
+                <p style="text-align: center; margin: 0;"><b>The kakapo is the only flightless parrot in the world.</b></p>
+            </div>
+        </div>
+        <br>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Fact Type</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody id="factTableBody">
+                <!-- Dynamic table rows added here -->
+            </tbody>
+        </table>
+        <br>
+        <div class="image1">
+            <img src="https://www.doc.govt.nz/thumbs/hero/contentassets/22c4c0407c1142ffbd70ef6ff029d722/stella-the-kakapo-codfish-1600.jpg" alt="Kakapo Image" class="center">
+            <p class="image-caption">(Image: <i>Department of Conservation, New Zealand)</i></p>
+        </div>
+        <br>
+        <h2><i>Contact The Conservation</i></h2>
+        <form id="contactForm" onsubmit="return validateForm()">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            <span id="nameError" class="error"></span>
+            <br><br>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <span id="emailError" class="error"></span>
+            <br><br>
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" required></textarea>
+            <span id="messageError" class="error"></span>
+            <br><br>
+
+            <input type="submit" value="Submit">
+        </form>
+        <div>
+            <h2>Kakapo #1</h2>
+            <p id="uppercaseResult"></p>
+            <p id="substringResult"></p>
+
+            <div class="center">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/9T1vfsHYiKY" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+        <div id="lastUpdated" style="position: fixed; top: 30px; right: 10px;"></div>
+        <div id="populationCount" style="position: fixed; top: 50px; right: 10px;"></div>
+<script>
+        function validateForm() {
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const message = document.getElementById('message').value;
+
+                const nameError = document.getElementById('nameError');
+                const emailError = document.getElementById('emailError');
+                const messageError = document.getElementById('messageError');
+
+                // Resetting previous error messages
+                nameError.textContent = "";
+                emailError.textContent = "";
+                messageError.textContent = "";
+
+                let isValid = true;
+
+                // Name validation
+                if (!name.trim()) {
+                    nameError.textContent = "Name is required";
+                    isValid = false;
+                }
+
+                // Email validation
+                if (!email.trim()) {
+                    emailError.textContent = "Email is required";
+                    isValid = false;
+                } else if (!isValidEmail(email)) {
+                    emailError.textContent = "Invalid email format";
+                    isValid = false;
+                }
+
+                // Message validation
+                if (!message.trim()) {
+                    messageError.textContent = "Message is required";
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            function isValidEmail(email) {
+                // Basic email format validation using regex
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailPattern.test(email);
+            }
+
+            const facts = [
+            {
+                type: "Habitat",
+                details: "Kakapos are native to New Zealand and are mostly found in forested areas."
+            },
+            {
+                type: "Population",
+                details: "As of 2021, there are only around 200 kakapos left in the world."
+            },
+            {
+                type: "Behaviour",
+                details: "Kakapos are nocturnal, solitary birds known for their unique booming calls."
+            }
+        
+        ];
+
+        function sortFactsAlphabetically() {
+        facts.sort((a, b) => a.type.localeCompare(b.type));
+        }
+
+        function updatePopulationCount() {
+            const currentPopulation = 247; // Replace with the actual live population count
+            const lastUpdatedDate = new Date(2023, 7, 28); // Replace with the last update date
+            const populationCountElement = document.getElementById('populationCount');
+            const lastUpdatedElement = document.getElementById('lastUpdated'); // Corrected ID
+
+            const formattedLastUpdated = lastUpdatedDate.toLocaleString(); // Format the last updated date
+
+            populationCountElement.textContent = `Population: ${currentPopulation}`;
+            lastUpdatedElement.textContent = `Last Updated: ${formattedLastUpdated}`;
+        }
+        
+        // Initial call to update population count
+        updatePopulationCount();
+
+        // Call the updatePopulationCount function every 1 minute (60000 milliseconds)
+        setInterval(updatePopulationCount, 60000);
+
+        // Number Method: toFixed() applied to population value
+        document.addEventListener('DOMContentLoaded', function() {
+        const tableBody = document.getElementById('factTableBody');
+
+        let counter = 1; // Initialize the counter
+        sortFactsAlphabetically(); 
+
+        facts.forEach(fact => {
+            const row = document.createElement('tr');
+            const numberCell = document.createElement('td'); // Create a cell for the fact number
+            const typeCell = document.createElement('td');
+            const detailsCell = document.createElement('td');
+
+            numberCell.textContent = counter++; // Display and increment the counter
+            typeCell.textContent = fact.type;
+            detailsCell.textContent = fact.details;
+
+            row.appendChild(numberCell);
+            row.appendChild(typeCell);
+            row.appendChild(detailsCell);
+
+            tableBody.appendChild(row);
+        });
+    });
+
+        const sampleString = "Sirocco the Spokesbird";
+        console.log("Title:", sampleString.toUpperCase());
+        console.log("Name:", sampleString.substring(0, 5));
+
+        const uppercaseResultElement = document.getElementById('uppercaseResult');
+        const substringResultElement = document.getElementById('substringResult');
+
+        uppercaseResultElement.textContent = "Title: " + sampleString.toUpperCase();
+        substringResultElement.textContent = "Name: " + sampleString.substring(0, 7);
+
+        const now = new Date();
+
+            // Display the current full date
+            const currentFullDateElement = document.getElementById('currentFullDate');
+            currentFullDateElement.textContent = "Full Date: " + now.toDateString();
+
+            // Display the current time
+            const currentTimeElement = document.getElementById('currentTime');
+            currentTimeElement.textContent = "Time: " + now.toTimeString();
+    </script>
+    </body>
+    </html>
